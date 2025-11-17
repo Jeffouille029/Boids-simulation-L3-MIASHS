@@ -17,16 +17,15 @@ The objective of this project is to design and implement a realistic simulation 
 ## 📁 Repository Structure
 
 📁 Boids-simulation-L3-MIASHS
-├──  boids/                 # Main package containing the core classes
+├── 📁 boids/                 # Main package containing the core classes
 │   ├── __init__.py           # Marks the folder as a Python package
-│   ├── 
 │
 ├── 📁 tests/                 # Unit tests
 │   ├── __init__.py
-│   ├── 
 │
-├── main.py                   # Entry point to run the simulation
+├── main.py                   # Entry point
 └── README.md                 # Project documentation
+
 
 ## 🛠️ Technologies Used
 
