@@ -16,6 +16,7 @@ The objective of this project is to design and implement a realistic simulation 
 * Rhiviere Ndamba
 ## 📁 Repository Structure
 
+```
 📁 Boids-simulation-L3-MIASHS
 ├── 📁 boids/                 # Main package containing the core classes
 │   ├── __init__.py           # Marks the folder as a Python package
@@ -25,6 +26,7 @@ The objective of this project is to design and implement a realistic simulation 
 │
 ├── main.py                   # Entry point
 └── README.md                 # Project documentation
+``` 
 
 
 ## 🛠️ Technologies Used
