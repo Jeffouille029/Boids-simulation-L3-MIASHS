@@ -6,7 +6,6 @@ It also explores modern enhancements and optimization techniques such as spatial
 
 The objective of this project is to design and implement a realistic simulation of collective animal behavior using the Boids model. The goals include:
 
-[A rediger]
 
 ## 👥 Team Members
 
