@@ -21,6 +21,7 @@ The objective of this project is to design and implement a realistic simulation 
 ├── 📁 boids/                 # Main package containing the core classes
 │   ├── __init__.py           # Marks the folder as a Python package
 │
+├── 📁 
 ├── 📁 tests/                 # Unit tests
 │   ├── __init__.py
 │
