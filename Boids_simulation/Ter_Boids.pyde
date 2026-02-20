@@ -26,13 +26,31 @@ class Agent(object):
         self.acc.mult(0)
         # Bords de l'écran
         self.gererBords()
+        # Gérer les bords de l'écran
+        self.acc.add(self.gererBords())
     
     def gererBords(self):
-        """Wrap around de l'écran"""
-        if self.pos.x > width: self.pos.x = 0
-        if self.pos.x < 0: self.pos.x = width
-        if self.pos.y > height: self.pos.y = 0
-        if self.pos.y < 0: self.pos.y = height
+        """Gère le comportement de l'agent aux bords de l'écran"""
+        # Wrap around
+        evitement = PVector(0, 0)
+        distance_securite = self.taille * 7
+        if self.pos.x < distance_securite:
+            diff = PVector(1, 0)
+            diff.mult(sqrt((distance_securite - self.pos.x) / distance_securite))
+            evitement.add(diff)
+        if self.pos.x > width - distance_securite:
+            diff = PVector(-1, 0)
+            diff.mult(sqrt((self.pos.x - (width - distance_securite)) / distance_securite))
+            evitement.add(diff)
+        if self.pos.y < distance_securite:
+            diff = PVector(0, 1)
+            diff.mult(sqrt((distance_securite - self.pos.y) / distance_securite))
+            evitement.add(diff)
+        if self.pos.y > height - distance_securite:
+            diff = PVector(0, -1)
+            diff.mult(sqrt((self.pos.y - (height - distance_securite)) / distance_securite))
+            evitement.add(diff)
+        return evitement
 
     def afficher(self):
         """Affichage par défaut"""
