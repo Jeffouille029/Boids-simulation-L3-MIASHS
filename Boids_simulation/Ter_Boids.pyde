@@ -25,14 +25,30 @@ class Agent(object):
         # Reset accélération
         self.acc.mult(0)
         # Bords de l'écran
-        self.gererBords()
+        self.acc.add(self.gererBords())
     
     def gererBords(self):
-        """Wrap around de l'écran"""
-        if self.pos.x > width: self.pos.x = 0
-        if self.pos.x < 0: self.pos.x = width
-        if self.pos.y > height: self.pos.y = 0
-        if self.pos.y < 0: self.pos.y = height
+        """Gère le comportement de l'agent aux bords de l'écran"""
+        # Wrap around
+        evitement = PVector(0, 0)
+        distance_securite = self.taille * 7
+        if self.pos.x < distance_securite:
+            diff = PVector(1, 0)
+            diff.mult(sqrt((distance_securite - self.pos.x) / distance_securite))
+            evitement.add(diff)
+        if self.pos.x > width - distance_securite:
+            diff = PVector(-1, 0)
+            diff.mult(sqrt((self.pos.x - (width - distance_securite)) / distance_securite))
+            evitement.add(diff)
+        if self.pos.y < distance_securite:
+            diff = PVector(0, 1)
+            diff.mult(sqrt((distance_securite - self.pos.y) / distance_securite))
+            evitement.add(diff)
+        if self.pos.y > height - distance_securite:
+            diff = PVector(0, -1)
+            diff.mult(sqrt((self.pos.y - (height - distance_securite)) / distance_securite))
+            evitement.add(diff)
+        return evitement
 
     def afficher(self):
         """Affichage par défaut"""
@@ -230,20 +246,139 @@ class Fish(Agent):
         self.acc.add(wand)
 
 # ============================================
+# CLASSE RECTANGLE
+# ============================================
+class Rectangle:
+    def __init__(self, x, y, hauteur, longueur):
+        #creer un rectangle
+        self.x =x
+        self.y = y
+        self.hauteur = hauteur
+        self.longueur = longueur
+    
+    def contenir(self, point):
+        #verifie si le point est dans le rectangle
+        return (point.pos.x >= self.x-self.longueur) and (point.pos.x <= self.x + self.longueur) and (point.pos.y >= self.y-self.hauteur) and (point.pos.y <= self.y + self.hauteur) 
+
+    def intersects(self, rang):
+        #verifie si le rectangle entre en collision avec l'autre rectangle rang
+        return not (rang.x - rang.longueur > self.x + self.longueur or 
+                rang.x + rang.longueur < self.x - self.longueur or 
+                rang.y + rang.hauteur < self.y - self.hauteur or 
+                rang.y - rang.hauteur > self.y + self.hauteur)
+
+# ============================================
+# CLASSE QUADTREE
+# ============================================
+            
+class QuadTree:
+    def __init__(self, limite, nb_max_point):
+        self.limite = limite
+        self.nb_max_point = nb_max_point
+        self.liste_points = []
+        self.diviser = False 
+        
+    def subdivide(self):
+        #coupe un rectangle en 4 parties
+        x = self.limite.x
+        y = self.limite.y
+        w = self.limite.longueur
+        h = self.limite.hauteur
+        HG = Rectangle(x - (w/2), y - (h/2), h/2, w/2)
+        HD = Rectangle(x + (w/2), y - (h/2), h/2, w/2)
+        BG = Rectangle(x - (w/2), y + (h/2), h/2, w/2)
+        BD = Rectangle(x + (w/2), y + (h/2), h/2, w/2)
+        self.HautGauche = QuadTree(HG, self.nb_max_point)
+        self.HautDroite = QuadTree(HD, self.nb_max_point)
+        self.BasGauche = QuadTree(BG, self.nb_max_point)
+        self.BasDroite = QuadTree(BD, self.nb_max_point)
+        self.diviser = True
+        
+    def inserer(self, point):
+        #ajoute le point a la liste des points
+        if not self.limite.contenir(point):
+            return False
+        if self.diviser:
+            self._inserer_dans_enfant(point)
+            return
+        if len(self.liste_points) < self.nb_max_point:
+            self.liste_points.append(point)
+            return True
+        self.subdivide()
+        anciens = self.liste_points
+        self.liste_points = []
+        for p in anciens:
+            self._inserer_dans_enfant(p)
+        self._inserer_dans_enfant(point)
+                #self.HautGauche.inserer(point)
+                #self.HautDroite.inserer(point)
+                #self.BasGauche.inserer(point)
+                #self.BasDroite.inserer(point)
+    
+    def _inserer_dans_enfant(self, point):
+        #ajoutes le point à la liste des points dans la zone
+            if self.HautGauche.limite.contenir(point):                    
+                self.HautGauche.inserer(point)
+                return True
+            elif self.HautDroite.limite.contenir(point):
+                self.HautDroite.inserer(point)
+                return True
+            elif self.BasGauche.limite.contenir(point):
+                self.BasGauche.inserer(point)
+                return True
+            elif self.BasDroite.limite.contenir(point):
+                self.BasDroite.inserer(point)
+                return True
+    
+    def query(self, rang, trouve):
+        #renvoie les points que se situent dans le rectangle rang
+        if self.limite.intersects(rang):
+            return
+        for p in self.liste_points:
+            if rang.contenir(p):
+                trouve.append(p)
+        if self.diviser:
+            self.HautGauche.query(rang, trouve)
+            self.HautDroite.query(rang, trouve)
+            self.BasGauche.query(rang, trouve)
+            self.BasDroite.query(rang, trouve)
+        return trouve
+    
+    def afficher(self):
+        #affiche les rectangles et les points
+        stroke(255)
+        strokeWeight(1)
+        noFill()
+        rect(self.limite.x, self.limite.y, self.limite.longueur*2, self.limite.hauteur*2)
+        if self.diviser:
+            self.HautGauche.afficher()
+            self.HautDroite.afficher()
+            self.BasGauche.afficher()
+            self.BasDroite.afficher()
+        for p in self.liste_points:
+            strokeWeight(4)
+            point(p.pos.x,p.pos.y)
+
+# ============================================
 # CLASSE SIMULATION
 # ============================================
 
 class Simulation:
-    def __init__(self, largeur, hauteur):
+    def __init__(self, largeur, hauteur, limite, nb_agent_max):
+        global Rectangle
+        global QuadTree
         self.largeur = largeur
         self.hauteur = hauteur
         self.agents = []
         self.afficher_perception = False
         self.afficher_stats = True
         self.paused = False
+        self.limite = limite
+        self.QT = QuadTree(self.limite, nb_agent_max)
 
     def initialiser(self, nb_agents=10, type_agent=Agent):
         """Initialise avec un type d'agent spécifique"""
+        rectMode(CENTER)
         self.agents = []
         for i in range(nb_agents):
             if type_agent == Fish:
@@ -252,19 +387,28 @@ class Simulation:
             else:
                 # Agent classique
                 self.ajouterAgent(random(self.largeur), random(self.hauteur))
+        self.QT.afficher()
             
     def ajouterAgent(self, x, y):
         """Ajoute un Agent par défaut"""
         agent = Agent(x, y, random(-2, 2), random(-2, 2), 10, 50, 4, 0.1)
         self.agents.append(agent)
+        self.QT.inserer(agent)
     
     def ajouterFish(self, x, y):
         """Ajoute un Fish"""
         fish = Fish(x, y)
         self.agents.append(fish)
+        self.QT.inserer(fish)
 
     def executer(self):
         background(30)
+        self.QT=QuadTree(self.limite, 10)
+        for agent in self.agents:
+            self.QT.inserer(agent)
+        self.QT.afficher()
+        stroke(0,255,0)
+        rectMode(CENTER)
         
         if self.afficher_stats:
             self._afficherStats()
@@ -376,9 +520,11 @@ class Simulation:
 sim = None
 
 def setup():
-    size(800, 600)
+    size(800, 800)
     global sim
-    sim = Simulation(width, height)
+    global Rectangle
+    global QuadTree
+    sim = Simulation(width, height, Rectangle(400,400,400,400), 10)
     
     # Initialiser avec des Fish 
     sim.initialiser(30, Fish)
