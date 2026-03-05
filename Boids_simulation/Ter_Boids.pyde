@@ -1,6 +1,8 @@
 from class_agent import Agent
 from class_fish import Fish
+from class_insect import Insect
 from class_simulation import Simulation
+
 
 # ============================================
 # MAIN
