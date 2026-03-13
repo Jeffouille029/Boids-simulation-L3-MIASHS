@@ -1,14 +1,25 @@
+from class_QuadTree.py import QuadTree
+from class_agent.py import Agent
+from class_fish.py import Fish
+from class_insect.py import Insect
+from class_rectangle.py import Rectangle
+
 class Simulation:
-    def __init__(self, largeur, hauteur):
+    def __init__(self, largeur, hauteur, limite, nb_agent_max):
+        global Rectangle
+        global QuadTree
         self.largeur = largeur
         self.hauteur = hauteur
         self.agents = []
         self.afficher_perception = False
         self.afficher_stats = True
         self.paused = False
+        self.limite = limite
+        self.QT = QuadTree(self.limite, nb_agent_max)
 
     def initialiser(self, nb_agents=10, type_agent=Agent):
         """Initialise avec un type d'agent spécifique"""
+        rectMode(CENTER)
         self.agents = []
         for i in range(nb_agents):
             if type_agent == Fish:
@@ -17,19 +28,28 @@ class Simulation:
             else:
                 # Agent classique
                 self.ajouterAgent(random(self.largeur), random(self.hauteur))
+        self.QT.afficher()
             
     def ajouterAgent(self, x, y):
         """Ajoute un Agent par défaut"""
         agent = Agent(x, y, random(-2, 2), random(-2, 2), 10, 50, 4, 0.1)
         self.agents.append(agent)
+        self.QT.inserer(agent)
     
     def ajouterFish(self, x, y):
         """Ajoute un Fish"""
         fish = Fish(x, y)
         self.agents.append(fish)
+        self.QT.inserer(fish)
 
     def executer(self):
         background(30)
+        self.QT=QuadTree(self.limite, 10)
+        for agent in self.agents:
+            self.QT.inserer(agent)
+        self.QT.afficher()
+        stroke(0,255,0)
+        rectMode(CENTER)
         
         if self.afficher_stats:
             self._afficherStats()
@@ -43,6 +63,12 @@ class Simulation:
             return
         
         for agent in self.agents:
+            r= agent.perception
+            rectquery = Rectangle(agent.pos.x, agent.pos.y, r, r) 
+            # j'ai divisé la taille du rectangle de perception de chaque agents pour que ca fonctionne mieux
+            rect(rectquery.x, rectquery.y, rectquery.longueur*2, rectquery.hauteur*2)
+            autres_agents = []
+            self.QT.query(rectquery, autres_agents)
             agent.appliquerRegles(self.agents)
             agent.update()
             agent.afficher()
