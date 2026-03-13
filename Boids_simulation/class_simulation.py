@@ -67,6 +67,7 @@ class Simulation:
             rectquery = Rectangle(agent.pos.x, agent.pos.y, r, r) 
             # j'ai divisé la taille du rectangle de perception de chaque agents pour que ca fonctionne mieux
             rect(rectquery.x, rectquery.y, rectquery.longueur*2, rectquery.hauteur*2)
+            # A supprimer ca montre juste la zone de perceprion du query
             autres_agents = []
             self.QT.query(rectquery, autres_agents)
             agent.appliquerRegles(self.agents)
