@@ -1,4 +1,4 @@
-import class_rectangle.py
+from class_rectangle import Rectangle
 
 # ============================================
 # CLASSE QUADTREE
