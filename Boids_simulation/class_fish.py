@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from class_agent import Agent 
 class Fish(Agent):
     """

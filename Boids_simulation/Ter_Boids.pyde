@@ -4,6 +4,7 @@ from class_insect import Insect
 from class_simulation import Simulation
 from class_rectangle import Rectangle
 from class_QuadTree import QuadTree
+from class_predateur import Predateur
 
 
 # ============================================
@@ -15,10 +16,12 @@ sim = None
 def setup():
     size(800, 600)
     global sim
-    sim = Simulation(width, height)
+    sim = Simulation(width, height, Rectangle(400, 300, 300, 400), 10)
     
     # Initialiser avec des Fish 
     sim.initialiser(30, Fish)
+    # initialisation predateur
+    sim.ajouterPredateur(width/2, height/2)
     
     print("Simulation démarrée avec des Fish")
     print("Clic gauche: Ajouter un poisson")

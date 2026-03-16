@@ -1,8 +1,10 @@
-from class_QuadTree.py import QuadTree
-from class_agent.py import Agent
-from class_fish.py import Fish
-from class_insect.py import Insect
-from class_rectangle.py import Rectangle
+# -*- coding: utf-8 -*-
+from class_QuadTree import QuadTree
+from class_agent import Agent
+from class_fish import Fish
+from class_insect import Insect
+from class_rectangle import Rectangle
+from class_predateur import Predateur
 
 class Simulation:
     def __init__(self, largeur, hauteur, limite, nb_agent_max):
@@ -28,7 +30,7 @@ class Simulation:
             else:
                 # Agent classique
                 self.ajouterAgent(random(self.largeur), random(self.hauteur))
-        self.QT.afficher()
+        #self.QT.afficher()
             
     def ajouterAgent(self, x, y):
         """Ajoute un Agent par défaut"""
@@ -41,13 +43,20 @@ class Simulation:
         fish = Fish(x, y)
         self.agents.append(fish)
         self.QT.inserer(fish)
+    
+    def ajouterPredateur(self, x, y):
+        """Ajoute un Prédateur"""
+        predateur = Predateur(x, y)
+        self.agents.append(predateur)
+        self.QT.inserer(predateur)
 
+    
     def executer(self):
         background(30)
         self.QT=QuadTree(self.limite, 10)
         for agent in self.agents:
             self.QT.inserer(agent)
-        self.QT.afficher()
+        #self.QT.afficher()
         stroke(0,255,0)
         rectMode(CENTER)
         
@@ -66,7 +75,7 @@ class Simulation:
             r= agent.perception
             rectquery = Rectangle(agent.pos.x, agent.pos.y, r, r) 
             # j'ai divisé la taille du rectangle de perception de chaque agents pour que ca fonctionne mieux
-            rect(rectquery.x, rectquery.y, rectquery.longueur*2, rectquery.hauteur*2)
+            #rect(rectquery.x, rectquery.y, rectquery.longueur*2, rectquery.hauteur*2)
             # A supprimer ca montre juste la zone de perceprion du query
             autres_agents = []
             self.QT.query(rectquery, autres_agents)
@@ -75,7 +84,12 @@ class Simulation:
             agent.afficher()
             if self.afficher_perception:
                 self._afficherRayonPerception(agent)
-
+                # agents qui sont mangé
+            if isinstance(agent, Predateur):
+                agent.manger(self.agents)
+                if len(self.agents) < 20:
+                    self.ajouterFish(random(self.largeur), random(self.hauteur))
+                    self.ajouterInsect(random(self.largeur), random(self.hauteur))
             
     def reinitialiser(self):
         """Réinitialise la simulation en vidant tous les agents"""

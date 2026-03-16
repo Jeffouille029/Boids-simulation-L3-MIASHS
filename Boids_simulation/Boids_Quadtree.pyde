@@ -402,7 +402,13 @@ class Simulation:
         fish = Fish(x, y)
         self.agents.append(fish)
         self.QT.inserer(fish)
-
+        
+    def ajouterPredateur(self, x, y):
+        """Ajoute un Prédateur"""
+        predateur = Predateur(x, y)
+        self.agents.append(predateur)
+        self.QT.inserer(predateur)
+    
     def executer(self):
         background(30)
         self.QT=QuadTree(self.limite, 10)
@@ -533,6 +539,7 @@ def setup():
     
     # Initialiser avec des Fish 
     sim.initialiser(40, Fish)
+    sim.ajouterPredateur(width/2, height/2)
     
     print("Simulation démarrée avec des Fish")
     print("Clic gauche: Ajouter un poisson")

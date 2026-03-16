@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class Agent(object):
     def __init__(self, x, y, vx, vy, taille, perception, maxVit, maxForce):
         self.pos = PVector(x, y)
