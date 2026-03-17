@@ -12,7 +12,7 @@ class Fish(Agent):
         taille = 10
         perception = 50
         maxVit = 4
-        maxForce = 0.1
+        maxForce = 0.15
         
         # Appel du constructeur parent
         super(Fish, self).__init__(x, y, vx, vy, taille, perception, maxVit, maxForce)
@@ -49,10 +49,10 @@ class Fish(Agent):
         coh = self.calculerCohesion(agents)
         wand = self.calculerWandering()
         
-        sep.mult(1.2)   # Distance
+        sep.mult(1.3)   # Distance
         ali.mult(1.0)   # Alignement 
         coh.mult(1.1)   # Cohésion 
-        wand.mult(1.0)  # Errance
+        wand.mult(1.8)  # Errance
         
         self.acc.add(sep)
         self.acc.add(ali)

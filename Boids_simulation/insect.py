@@ -13,14 +13,14 @@ class Insect(Agent):
         taille = 6
         perception = 40
         maxVit = 5
-        maxForce = 0.3   
+        maxForce = 0.25  
         super(Insect, self).__init__(x, y, vx, vy, taille, perception, maxVit, maxForce)
         
         # Paramètres du jitter
-        self.jitter_force   = 1.8    
+        self.jitter_force   = 0.8    
         self.jitter_offset  = random(1000)  
         self.impulse_timer  = 0      
-        self.impulse_rate   = int(random(8, 20)) 
+        self.impulse_rate   = int(random(10, 25)) 
         self.couleur = color(random(180, 255), random(100, 160), random(0, 60))
     
     def calculerJitter(self):
@@ -29,7 +29,7 @@ class Insect(Agent):
         - Bruit de Perlinuuuuu
         - Impulsions brusques périodiques
         """
-        t = frameCount * 0.15 
+        t = frameCount * 0.1
         # Bruit de Perlin 2D
         nx = noise(self.jitter_offset, t) * 2 - 1
         ny = noise(self.jitter_offset + 100, t) * 2 - 1
@@ -38,13 +38,13 @@ class Insect(Agent):
         self.impulse_timer += 1
         if self.impulse_timer >= self.impulse_rate:
             self.impulse_timer = 0
-            self.impulse_rate  = int(random(8, 20)) 
+            self.impulse_rate  = int(random(10, 25)) 
             burst = PVector(random(-1, 1), random(-1, 1))
             burst.normalize()
-            burst.mult(self.maxVit * 1.5)
+            burst.mult(self.maxVit * 0.7)
             jitter.add(burst)
         
-        jitter.limit(self.maxForce * 3)
+        jitter.limit(self.maxForce * 2)
         return jitter
 
     def afficher(self):
@@ -74,12 +74,14 @@ class Insect(Agent):
         jitt = self.calculerJitter()
         
 
-        sep.mult(2.0)
-        ali.mult(0.4)
-        coh.mult(0.8)
-        jitt.mult(1.5)
+        sep.mult(1.8)
+        ali.mult(0.5)
+        coh.mult(0.7)
+        jitt.mult(1.0)
         
         self.acc.add(sep)
         self.acc.add(ali)
         self.acc.add(coh)
         self.acc.add(jitt)
+        #
+        self.acc.limit(self.maxForce*2)
