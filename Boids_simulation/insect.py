@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from class_agent import Agent 
+from agent import Agent 
 
 class Insect(Agent):
     """

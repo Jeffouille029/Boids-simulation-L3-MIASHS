@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from class_rectangle import Rectangle
+from rectangle import Rectangle
 
 # ============================================
 # CLASSE QUADTREE

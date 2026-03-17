@@ -1,10 +1,10 @@
-from class_agent import Agent
-from class_fish import Fish
-from class_insect import Insect
-from class_simulation import Simulation
-from class_rectangle import Rectangle
-from class_QuadTree import QuadTree
-from class_predateur import Predateur
+from agent import Agent
+from fish import Fish
+from insect import Insect
+from simulation import Simulation
+from rectangle import Rectangle
+from QuadTree import QuadTree
+from predateur import Predateur
 
 
 # ============================================
