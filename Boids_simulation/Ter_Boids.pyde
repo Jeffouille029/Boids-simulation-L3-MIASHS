@@ -13,11 +13,12 @@ from class_predateur import Predateur
 
 sim = None
 
+
 def setup():
     size(800, 600)
     global sim
     sim = Simulation(width, height, Rectangle(400, 300, 300, 400), 10)
-    
+
     # Initialiser avec des Fish 
     sim.initialiser(30, Fish)
     # initialisation predateur
