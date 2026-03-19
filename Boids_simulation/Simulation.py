@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from QuadTree import QuadTree
-from agent import Agent
-from fish import Fish
-from insect import Insect
-from rectangle import Rectangle
-from predateur import Predateur
+from Agent import Agent
+from Fish import Fish
+from Insect import Insect
+from Rectangle import Rectangle
+from Predateur import Predateur
 
 class Simulation:
     def __init__(self, largeur, hauteur, limite, nb_agent_max):
