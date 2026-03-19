@@ -1,10 +1,10 @@
-from agent import Agent
-from fish import Fish
-from insect import Insect
-from simulation import Simulation
-from rectangle import Rectangle
+from Agent import Agent
+from Fish import Fish
+from Insect import Insect
+from Dimulation import Simulation
+from Rectangle import Rectangle
 from QuadTree import QuadTree
-from predateur import Predateur
+from Predateur import Predateur
 
 
 # ============================================
