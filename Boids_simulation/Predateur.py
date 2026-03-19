@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from agent import Agent
+from Agent import Agent
 
 class Predateur(Agent):
     def __init__(self, x, y):
