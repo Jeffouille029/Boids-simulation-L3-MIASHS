@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from agent import Agent 
+from Agent import Agent 
 class Fish(Agent):
     """
     Classe Fish héritant d'Agent.
