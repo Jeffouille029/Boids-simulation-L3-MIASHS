@@ -18,6 +18,8 @@ class Simulation:
         self.paused = False
         self.limite = limite
         self.QT = QuadTree(self.limite, nb_agent_max)
+        self.utiliser_quadtree = True
+        self.historique_durees = []
 
     def initialiser(self, nb_agents=10, type_agent=Agent):
         """Initialise avec un type d'agent spécifique"""
@@ -58,43 +60,49 @@ class Simulation:
     
     def executer(self):
         background(30)
-        self.QT=QuadTree(self.limite, 10)
+        self.QT = QuadTree(self.limite, 6)
         for agent in self.agents:
             self.QT.inserer(agent)
-        #self.QT.afficher()
-        stroke(0,255,0)
-        rectMode(CENTER)
-        
-        if self.afficher_stats:
-            self._afficherStats()
-            
+
+        t0 = millis()
+
         if self.paused:
             fill(255, 0, 0)
             textSize(30)
             text("PAUSE", self.largeur / 2 - 50, 50)
             for agent in self.agents:
                 agent.afficher()
+            self._afficherStats()
             return
-        
-        for agent in self.agents:
-            r= agent.perception
-            rectquery = Rectangle(agent.pos.x, agent.pos.y, r, r) 
-            # j'ai divisé la taille du rectangle de perception de chaque agents pour que ca fonctionne mieux
-            # rect(rectquery.x, rectquery.y, rectquery.longueur*2, rectquery.hauteur*2)
-            # A supprimer ca montre juste la zone de perceprion du query
-            autres_agents = []
-            self.QT.query(rectquery, autres_agents)
-            agent.appliquerRegles(autres_agents)
+
+        for agent in list(self.agents):
+            if self.utiliser_quadtree:
+                r = agent.perception
+                rectquery = Rectangle(agent.pos.x, agent.pos.y, r, r)
+                autres_agents = []
+                self.QT.query(rectquery, autres_agents)
+                agent.appliquerRegles(autres_agents)
+            else:
+                agent.appliquerRegles(self.agents)
             agent.update()
             agent.afficher()
             if self.afficher_perception:
                 self._afficherRayonPerception(agent)
-                # agents qui sont mangé
             if isinstance(agent, Predateur):
                 agent.manger(self.agents)
-            if len(self.agents) < 20: #le freeze était ici. Des qu'on était dans le boucle on en sortait jamais
-                    self.ajouterFish(random(self.largeur), random(self.hauteur))
-                    self.ajouterInsect(random(self.largeur), random(self.hauteur))
+
+        t1 = millis()
+
+        self.historique_durees.append(t1 - t0)
+        if len(self.historique_durees) > 60:
+            self.historique_durees.pop(0)
+
+        if len(self.agents) < 20:
+            self.ajouterFish(random(self.largeur), random(self.hauteur))
+            self.ajouterInsect(random(self.largeur), random(self.hauteur))
+
+        if self.afficher_stats:
+            self._afficherStats()
             
     def reinitialiser(self):
         """Réinitialise la simulation en vidant tous les agents"""
@@ -144,6 +152,10 @@ class Simulation:
         textSize(12)
         fill(200)
         text("R: Reset | P: Pause | V: Perception | S: Stats", 10, self.hauteur - 20)
+        mode = "QuadTree" if self.utiliser_quadtree else "Sans Quadtree"
+        duree = sum(self.historique_durees) / max(len(self.historique_durees), 1)
+        text("Mode: {} (Q pour changer)".format(mode), 10, 80)
+        text("Temps calcul moy: {:.2f} ms".format(duree), 10, 100)
     
     def _afficherRayonPerception(self, agent):
         """Affiche le rayon de perception d'un agent avec son champ de vision"""
