@@ -22,7 +22,7 @@ def setup():
     # Initialiser avec des Fish 
     sim.initialiser(30, Fish)
     # initialisation predateur
-    sim.ajouterPredateur(width/2, height/2)
+    sim.ajouterPredateur(width/2, height/2) #Mettre cette ligne en commentaire quand calcul de performance
     
     print("Simulation démarrée avec des Fish")
     print("Clic gauche: Ajouter un poisson")
