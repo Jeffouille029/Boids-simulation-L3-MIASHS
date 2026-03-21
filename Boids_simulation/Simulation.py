@@ -50,6 +50,11 @@ class Simulation:
         self.agents.append(predateur)
         self.QT.inserer(predateur)
 
+    def ajouterInsect(self, x, y):
+        """Ajoute un Insect"""
+        insect = Insect(x, y)
+        self.agents.append(insect)
+        self.QT.inserer(insect)
     
     def executer(self):
         background(30)
@@ -79,7 +84,7 @@ class Simulation:
             # A supprimer ca montre juste la zone de perceprion du query
             autres_agents = []
             self.QT.query(rectquery, autres_agents)
-            agent.appliquerRegles(self.agents)
+            agent.appliquerRegles(autres_agents)
             agent.update()
             agent.afficher()
             if self.afficher_perception:
@@ -87,7 +92,7 @@ class Simulation:
                 # agents qui sont mangé
             if isinstance(agent, Predateur):
                 agent.manger(self.agents)
-                if len(self.agents) < 20:
+            if len(self.agents) < 20: #le freeze était ici. Des qu'on était dans le boucle on en sortait jamais
                     self.ajouterFish(random(self.largeur), random(self.hauteur))
                     self.ajouterInsect(random(self.largeur), random(self.hauteur))
             
