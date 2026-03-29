@@ -153,7 +153,7 @@ class Simulation:
         # Instructions
         textSize(12)
         fill(200)
-        text("R: Reset | P: Pause | V: Perception | S: Stats", 10, self.hauteur - 20)
+        text("R: Reset | P: Pause | V: Perception | S: Stats | E: Exporter", 10, self.hauteur - 20)
         mode = "QuadTree" if self.utiliser_quadtree else "Sans Quadtree"
         duree = sum(self.historique_durees) / max(len(self.historique_durees), 1)
         text("Mode: {} (Q pour changer)".format(mode), 10, 80)
