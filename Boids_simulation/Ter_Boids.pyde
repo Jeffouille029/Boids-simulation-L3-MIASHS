@@ -51,4 +51,10 @@ def keyPressed():
         sim.toggleStats()
     elif key == 'p' or key == 'P':
         sim.togglePause()
+    elif key == 'e' or key == 'E':
+        lignes = ["duree_ms"]  # en-tête pour R
+        for d in sim.toutes_durees:
+            lignes.append(str(d))
+        saveStrings("durees.csv", lignes)
+        print("Exporté : {} frames".format(len(sim.toutes_durees)))
     
