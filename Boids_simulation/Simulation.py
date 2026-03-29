@@ -20,6 +20,7 @@ class Simulation:
         self.QT = QuadTree(self.limite, nb_agent_max)
         self.utiliser_quadtree = True
         self.historique_durees = []
+        self.toutes_durees = []
 
     def initialiser(self, nb_agents=10, type_agent=Agent):
         """Initialise avec un type d'agent spécifique"""
@@ -96,6 +97,7 @@ class Simulation:
         self.historique_durees.append(t1 - t0)
         if len(self.historique_durees) > 60:
             self.historique_durees.pop(0)
+        self.toutes_durees.append(t1 - t0)
 
         if len(self.agents) < 20:
             self.ajouterFish(random(self.largeur), random(self.hauteur))
