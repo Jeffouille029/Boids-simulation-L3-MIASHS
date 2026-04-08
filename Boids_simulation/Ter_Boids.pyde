@@ -19,8 +19,12 @@ def setup():
     global sim
     sim = Simulation(width, height, Rectangle(400, 300, 300, 400), 10)
 
-    # Initialiser avec des Fish 
-    sim.initialiser(30, Fish)
+    for i in range(10):
+        sim.ajouterFish(random(width), random(height))
+    for i in range(10):
+        sim.ajouterInsect(random(width), random(height))
+    for i in range(10):
+        sim.ajouterAgent(random(width), random(height))
     # initialisation predateur
     sim.ajouterPredateur(width/2, height/2) #Mettre cette ligne en commentaire quand calcul de performance
     
